@@ -12,6 +12,9 @@ import '../../features/booking/presentation/screens/booking_summary_screen.dart'
 import '../../features/booking/presentation/screens/payment_screen.dart';
 import '../../features/booking/presentation/screens/booking_success_screen.dart';
 import '../../features/tracking/presentation/screens/tracking_screen.dart';
+import '../../features/customer/presentation/screens/customer_dashboard.dart';
+import '../../features/driver/presentation/screens/driver_dashboard.dart';
+import '../../features/fleet/presentation/screens/fleet_dashboard.dart';
 
 
 class AppRouter {
@@ -58,9 +61,15 @@ class AppRouter {
       ),
 
       GoRoute(
-      path: '/booking-summary',
-      builder: (context, state) => const BookingSummaryScreen(),
-      ),
+  path: '/booking-summary',
+  builder: (context, state) {
+    final truck = state.extra as Map<String, dynamic>;
+
+    return BookingSummaryScreen(
+      truck: truck,
+    );
+  },
+),
 
       GoRoute(
       path: '/payment',
@@ -76,6 +85,21 @@ class AppRouter {
       path: '/tracking',
       builder: (context, state) => const TrackingScreen(),
       ),
+
+      GoRoute(
+  path: '/customer-dashboard',
+  builder: (context, state) => const CustomerDashboard(),
+),
+
+GoRoute(
+  path: '/driver-dashboard',
+  builder: (context, state) => const DriverDashboard(),
+),
+
+GoRoute(
+  path: '/fleet-dashboard',
+  builder: (context, state) => const FleetDashboard(),
+),
 
       GoRoute(
         path: '/dashboard',

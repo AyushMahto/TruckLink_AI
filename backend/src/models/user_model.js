@@ -24,10 +24,10 @@ const userSchema = new mongoose.Schema(
     },
 
     role: {
-      type: String,
-      enum: ["customer", "driver", "admin"],
-      default: "customer",
-    },
+  type: String,
+  enum: ["customer", "driver", "fleet"],
+  default: "customer",
+},
   },
   {
     timestamps: true,

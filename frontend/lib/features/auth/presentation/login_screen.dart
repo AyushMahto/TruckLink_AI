@@ -68,7 +68,17 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-      context.go('/dashboard');
+      final role = result["user"]["role"];
+
+if (role == "customer") {
+  context.go('/customer-dashboard');
+} else if (role == "driver") {
+  context.go('/driver-dashboard');
+} else if (role == "fleet") {
+  context.go('/fleet-dashboard');
+} else {
+  context.go('/login');
+}
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

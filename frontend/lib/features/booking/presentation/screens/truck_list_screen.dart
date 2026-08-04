@@ -22,30 +22,48 @@
 //   }
 // }
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../provider/booking_provider.dart';
+import '../../../../services/truck_service.dart';
 import '../widgets/truck_card.dart';
 
-class TruckListScreen extends ConsumerWidget {
+class TruckListScreen extends StatefulWidget {
   const TruckListScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final trucks = ref.watch(truckListProvider);
+  State<TruckListScreen> createState() => _TruckListScreenState();
+}
 
+class _TruckListScreenState extends State<TruckListScreen> {
+  final TruckService truckService = TruckService();
+
+  List<dynamic> trucks = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadTrucks();
+  }
+
+  Future<void> loadTrucks() async {
+    final data = await truckService.getAvailableTrucks();
+
+    setState(() {
+      trucks = data;
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Available Trucks"),
         centerTitle: true,
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(20),
-
         child: Column(
           children: [
-
             TextField(
               decoration: InputDecoration(
                 hintText: "Search Truck",
@@ -63,7 +81,6 @@ class TruckListScreen extends ConsumerWidget {
 
             Row(
               children: [
-
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {},
@@ -87,14 +104,25 @@ class TruckListScreen extends ConsumerWidget {
             const SizedBox(height: 20),
 
             Expanded(
-              child: ListView.builder(
-                itemCount: trucks.length,
-                itemBuilder: (context, index) {
-                  return TruckCard(
-                    truck: trucks[index],
-                  );
-                },
-              ),
+              child: isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : trucks.isEmpty
+                      ? const Center(
+                          child: Text(
+                            "No Trucks Available",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: trucks.length,
+                          itemBuilder: (context, index) {
+                            return TruckCard(
+                              truck: trucks[index],
+                            );
+                          },
+                        ),
             ),
           ],
         ),

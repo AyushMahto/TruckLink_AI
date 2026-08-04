@@ -47,3 +47,4 @@ class AuthService {
     return jsonDecode(response.body);
   }
 }
+

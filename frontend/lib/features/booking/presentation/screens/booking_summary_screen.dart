@@ -1,168 +1,76 @@
-// import 'package:flutter/material.dart';
-
-// class BookingSummaryScreen extends StatelessWidget {
-//   const BookingSummaryScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text("Booking Summary"),
-//       ),
-//       body: const Center(
-//         child: Text(
-//           "Booking Summary Screen",
-//           style: TextStyle(
-//             fontSize: 24,
-//             fontWeight: FontWeight.bold,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class BookingSummaryScreen extends StatelessWidget {
-  const BookingSummaryScreen({super.key});
+  final Map<String, dynamic> truck;
+
+  const BookingSummaryScreen({
+    super.key,
+    required this.truck,
+  });
 
   @override
   Widget build(BuildContext context) {
-    const double truckFare = 1450;
-    const double gst = 261;
-    const double platformFee = 49;
-    const double total = truckFare + gst + platformFee;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Booking Summary"),
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: const ListTile(
-                leading: Icon(Icons.location_on, color: Colors.green),
-                title: Text("Pickup"),
-                subtitle: Text("Pune Railway Station"),
-              ),
-            ),
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      truck["truckName"],
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
 
-            const SizedBox(height: 15),
+                    const SizedBox(height: 10),
 
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: const ListTile(
-                leading: Icon(Icons.flag, color: Colors.red),
-                title: Text("Destination"),
-                subtitle: Text("Mumbai Port"),
-              ),
-            ),
+                    Text("Driver : ${truck["driverName"]}"),
+                    Text("Phone : ${truck["driverPhone"]}"),
+                    Text("Type : ${truck["truckType"]}"),
+                    Text("Capacity : ${truck["capacity"]} kg"),
+                    Text("Location : ${truck["currentLocation"]}"),
 
-            const SizedBox(height: 20),
+                    const SizedBox(height: 15),
 
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: const ListTile(
-                leading: Icon(Icons.local_shipping),
-                title: Text("Mini Truck"),
-                subtitle: Text("800 KG • ETA 2 Hours"),
-                trailing: Text(
-                  "₹1450",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+                    Text(
+                      "₹ ${truck["pricePerKm"]} / km",
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
 
-            const SizedBox(height: 30),
-
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Price Details",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            _priceRow("Truck Fare", truckFare),
-            _priceRow("GST", gst),
-            _priceRow("Platform Fee", platformFee),
-
-            const Divider(height: 35),
-
-            _priceRow(
-              "Total",
-              total,
-              bold: true,
-            ),
-
-            const SizedBox(height: 40),
+            const Spacer(),
 
             SizedBox(
               width: double.infinity,
-              height: 55,
               child: ElevatedButton(
                 onPressed: () {
-                  context.go('/payment');
+                  context.push("/payment");
                 },
-                child: const Text(
-                  "Proceed to Payment",
-                  style: TextStyle(fontSize: 18),
-                ),
+                child: const Text("Continue to Payment"),
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  static Widget _priceRow(
-    String title,
-    double amount, {
-    bool bold = false,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              title,
-              style: TextStyle(
-                fontWeight:
-                    bold ? FontWeight.bold : FontWeight.normal,
-                fontSize: bold ? 18 : 16,
-              ),
-            ),
-          ),
-          Text(
-            "₹${amount.toStringAsFixed(0)}",
-            style: TextStyle(
-              fontWeight:
-                  bold ? FontWeight.bold : FontWeight.normal,
-              fontSize: bold ? 18 : 16,
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/models/truck_model.dart';
-import 'ai_badge.dart';
-
 class TruckCard extends StatelessWidget {
-  final TruckModel truck;
+  final Map<String, dynamic> truck;
 
   const TruckCard({
     super.key,
@@ -25,10 +22,6 @@ class TruckCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (truck.recommended) const AIBadge(),
-
-            if (truck.recommended) const SizedBox(height: 12),
-
             Row(
               children: [
                 Container(
@@ -52,7 +45,7 @@ class TruckCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        truck.name,
+                        truck["truckName"] ?? "",
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -61,9 +54,11 @@ class TruckCard extends StatelessWidget {
 
                       const SizedBox(height: 8),
 
-                      Text("Capacity : ${truck.capacity}"),
+                      Text("Type : ${truck["truckType"]}"),
 
-                      Text("ETA : ${truck.eta}"),
+                      Text("Capacity : ${truck["capacity"]} kg"),
+
+                      Text("Location : ${truck["currentLocation"]}"),
                     ],
                   ),
                 ),
@@ -73,22 +68,31 @@ class TruckCard extends StatelessWidget {
             const SizedBox(height: 18),
 
             Text(
-              "₹ ${truck.price.toStringAsFixed(0)}",
+              "₹ ${truck["pricePerKm"]} / km",
               style: const TextStyle(
-                fontSize: 24,
+                fontSize: 22,
                 color: Colors.blue,
                 fontWeight: FontWeight.bold,
               ),
             ),
+
+            const SizedBox(height: 8),
+
+            Text("Driver : ${truck["driverName"]}"),
+
+            Text("Phone : ${truck["driverPhone"]}"),
 
             const SizedBox(height: 18),
 
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  context.go('/booking-summary');
-                },
+               onPressed: () {
+  context.push(
+    "/booking-summary",
+    extra: truck,
+  );
+},
                 child: const Text("Book Now"),
               ),
             ),
