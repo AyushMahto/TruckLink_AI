@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../widgets/app_logo.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_textfield.dart';
+import '../../../services/auth_service.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -14,6 +15,9 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   bool hidePassword = true;
+  bool isLoading = false;
+
+  final AuthService authService = AuthService();
 
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -28,6 +32,51 @@ class _SignupScreenState extends State<SignupScreen> {
     passwordController.dispose();
     super.dispose();
   }
+  Future<void> signupUser() async {
+  setState(() {
+    isLoading = true;
+  });
+
+  try {
+    final result = await authService.signup(
+      fullName: nameController.text.trim(),
+      email: emailController.text.trim(),
+      phone: phoneController.text.trim(),
+      password: passwordController.text,
+      role: "customer",
+    );
+
+    if (!mounted) return;
+
+    if (result["success"] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Account Created Successfully"),
+        ),
+      );
+
+      context.go('/login');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result["message"]),
+        ),
+      );
+    }
+  } catch (e) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(e.toString()),
+      ),
+    );
+  }
+
+  setState(() {
+    isLoading = false;
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -106,18 +155,14 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
 
                 const SizedBox(height: 30),
-
-                // CustomButton(
-                //   text: "Create Account",
-                //   onPressed: () {
-                //     context.go('/role');
-                //   },
-                // ),
+ 
                 CustomButton(
-                  text: "Create Account",
-                  onPressed: () {
-                    context.go('/role');
-                  },
+                text: isLoading ? "Creating..." : "Create Account",
+                onPressed: () async {
+                if (!isLoading) {
+                await signupUser();
+                }
+                },
                 ),
 
                 const SizedBox(height: 20),
@@ -131,7 +176,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       //   context.go('/login');
                       // },
                       onPressed: () {
-                        context.go('/role');
+                        context.go('/login');
                       },
                       child: const Text("Login"),
                     ),

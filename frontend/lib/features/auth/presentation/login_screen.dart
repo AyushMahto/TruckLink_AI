@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
+import '../../../services/auth_service.dart';
 import '../widgets/app_logo.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_textfield.dart';
@@ -33,9 +33,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool hidePassword = true;
-
+  bool isLoading = false;
+  
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final AuthService authService = AuthService();
 
   @override
   void dispose() {
@@ -43,6 +45,52 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
     super.dispose();
   }
+
+
+  Future<void> loginUser() async {
+  setState(() {
+    isLoading = true;
+  });
+
+  try {
+    final result = await authService.login(
+      email: emailController.text.trim(),
+      password: passwordController.text,
+    );
+
+    if (!mounted) return;
+
+    if (result["success"] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Login Successful"),
+        ),
+      );
+
+      context.go('/dashboard');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result["message"] ?? "Login Failed"),
+        ),
+      );
+    }
+  } catch (e) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Error: $e"),
+      ),
+    );
+  }
+
+  if (mounted) {
+    setState(() {
+      isLoading = false;
+    });
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -124,10 +172,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 10),
 
                 CustomButton(
-                  text: "Login",
-                  onPressed: () {
-                    // TODO: Login
-                  },
+                text: isLoading ? "Logging In..." : "Login",
+                onPressed: () async {
+                if (!isLoading) {
+                await loginUser();
+                }
+                },
                 ),
 
                 const SizedBox(height: 25),
