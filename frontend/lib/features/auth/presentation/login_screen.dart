@@ -24,6 +24,7 @@ import '../widgets/custom_button.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/social_button.dart';
 
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -214,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Text("Don't have an account? "),
                     TextButton(
                       onPressed: () {
-                        context.go('/signup');
+                        context.push('/role');
                       },
                       child: const Text("Sign Up"),
                     ),

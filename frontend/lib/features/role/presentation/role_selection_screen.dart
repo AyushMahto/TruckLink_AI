@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,6 +10,12 @@ class RoleSelectionScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xffF5F7FB),
       appBar: AppBar(
+  leading: IconButton(
+    icon: const Icon(Icons.arrow_back),
+    onPressed: () {
+      context.pop();
+    },
+  ),
         elevation: 0,
         backgroundColor: Colors.transparent,
         title: const Text(
@@ -24,29 +31,32 @@ class RoleSelectionScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             _roleCard(
-              context,
-              icon: Icons.person,
-              title: "Customer",
-              subtitle: "Book trucks and track shipments",
-            ),
+  context,
+  icon: Icons.person,
+  title: "Customer",
+  subtitle: "Book trucks and track shipments",
+  role: "customer",
+),
 
             const SizedBox(height: 20),
 
             _roleCard(
-              context,
-              icon: Icons.local_shipping,
-              title: "Driver",
-              subtitle: "Accept delivery requests",
-            ),
+  context,
+  icon: Icons.local_shipping,
+  title: "Driver",
+  subtitle: "Accept delivery requests",
+  role: "driver",
+),
 
             const SizedBox(height: 20),
 
             _roleCard(
-              context,
-              icon: Icons.business,
-              title: "Transport Company",
-              subtitle: "Manage trucks and drivers",
-            ),
+  context,
+  icon: Icons.business,
+  title: "Transport Company",
+  subtitle: "Manage trucks and drivers",
+  role: "fleet",
+),
           ],
         ),
       ),
@@ -54,16 +64,17 @@ class RoleSelectionScreen extends StatelessWidget {
   }
 
   Widget _roleCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
-  }) {
+  BuildContext context, {
+  required IconData icon,
+  required String title,
+  required String subtitle,
+  required String role,
+}) {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       onTap: () {
-        context.go('/dashboard');
-      },
+  context.push('/signup?role=$role');
+},
       child: Container(
         padding: const EdgeInsets.all(22),
         decoration: BoxDecoration(

@@ -6,8 +6,19 @@ import '../widgets/custom_button.dart';
 import '../widgets/custom_textfield.dart';
 import '../../../services/auth_service.dart';
 
+// class SignupScreen extends StatefulWidget {
+//   const SignupScreen({super.key});
+
+//   @override
+//   State<SignupScreen> createState() => _SignupScreenState();
+// }
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+  final String role;
+
+  const SignupScreen({
+    super.key,
+    required this.role,
+  });
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -43,7 +54,7 @@ class _SignupScreenState extends State<SignupScreen> {
       email: emailController.text.trim(),
       phone: phoneController.text.trim(),
       password: passwordController.text,
-      role: "customer",
+      role: widget.role,
     );
 
     if (!mounted) return;

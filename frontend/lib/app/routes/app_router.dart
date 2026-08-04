@@ -1,23 +1,8 @@
-// import 'package:go_router/go_router.dart';
-
-// import '../../features/splash/presentation/splash_screen.dart';
-
-// class AppRouter {
-//   static final router = GoRouter(
-//     initialLocation: '/',
-//     routes: [
-//       GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
-//     ],
-//   );
-// }
-
-//
-//
 
 import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/onboarding_screen.dart';
-import '../../features/auth/presentation/role_selection_screen.dart';
+import '../../features/role/presentation/role_selection_screen.dart';
 import '../../features/auth/presentation/signup_screen.dart';
 import '../../features/customer/presentation/dashboard_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
@@ -42,14 +27,24 @@ class AppRouter {
 
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
 
+      // GoRoute(
+      //   path: '/signup',
+      //   builder: (context, state) => const SignupScreen(),
+      // ),
       GoRoute(
-        path: '/signup',
-        builder: (context, state) => const SignupScreen(),
+      path: '/signup',
+      builder: (context, state) {
+      final role = state.uri.queryParameters['role'] ?? 'customer';
+
+      return SignupScreen(
+      role: role,
+      );
+      },
       ),
 
       GoRoute(
-        path: '/role',
-        builder: (context, state) => const RoleSelectionScreen(),
+      path: '/role',
+      builder: (context, state) => const RoleSelectionScreen(),
       ),
 
       GoRoute(
