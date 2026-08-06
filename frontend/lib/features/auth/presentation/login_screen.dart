@@ -1,20 +1,4 @@
-// import 'package:flutter/material.dart';
 
-// class LoginScreen extends StatelessWidget {
-//   const LoginScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Scaffold(
-//       body: Center(
-//         child: Text(
-//           "Login Screen",
-//           style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -48,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
 
-  Future<void> loginUser() async {
+ Future<void> loginUser() async {
   setState(() {
     isLoading = true;
   });
@@ -62,6 +46,13 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (result["success"] == true) {
+      // Save logged-in user
+      await authService.saveUser(result["user"]);
+
+print("Login Response: $result");
+print("Saved User ID: ${await authService.getUserId()}");
+print("Saved Role: ${await authService.getRole()}");
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Login Successful"),
