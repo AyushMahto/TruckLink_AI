@@ -103,14 +103,17 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen> {
                   if (!mounted) return;
 
                   if (result["success"] == true) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Booking Created Successfully"),
-                      ),
-                    );
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text("Booking Created Successfully"),
+    ),
+  );
 
-                    context.push("/payment");
-                  } else {
+  context.push(
+    "/payment",
+    extra: (widget.truck["pricePerKm"] as num).toDouble(),
+  );
+} else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(result["message"] ?? "Booking Failed"),
