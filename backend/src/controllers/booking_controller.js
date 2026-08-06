@@ -43,10 +43,10 @@ const getBookings = async (req, res) => {
     });
   }
 };
+
 // =========================
 // Get Pending Bookings
 // =========================
-
 const getPendingBookings = async (req, res) => {
   try {
     const bookings = await Booking.find({
@@ -68,16 +68,14 @@ const getPendingBookings = async (req, res) => {
     });
   }
 };
+
 // =========================
 // Get Customer Bookings
 // =========================
-
 const getCustomerBookings = async (req, res) => {
   try {
-    const { customerId } = req.params;
-
     const bookings = await Booking.find({
-      customer: customerId,
+      customer: req.params.customerId,
     })
       .populate("truck")
       .sort({ createdAt: -1 });
@@ -86,8 +84,8 @@ const getCustomerBookings = async (req, res) => {
       success: true,
       bookings,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
 
     res.status(500).json({
       success: false,
@@ -99,24 +97,17 @@ const getCustomerBookings = async (req, res) => {
 // =========================
 // Update Booking Status
 // =========================
-
 const updateBookingStatus = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status } = req.body;
-
     const booking = await Booking.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true }
+      req.params.id,
+      {
+        status: req.body.status,
+      },
+      {
+        new: true,
+      }
     );
-
-    if (!booking) {
-      return res.status(404).json({
-        success: false,
-        message: "Booking not found",
-      });
-    }
 
     res.json({
       success: true,
@@ -132,10 +123,100 @@ const updateBookingStatus = async (req, res) => {
   }
 };
 
+// =========================
+// START TRIP
+// =========================
+const startTrip = async (req, res) => {
+  try {
+    const booking = await Booking.findByIdAndUpdate(
+      req.params.id,
+      {
+        tripStarted: true,
+        status: "In Transit",
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.json({
+      success: true,
+      booking,
+    });
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+// =========================
+// UPDATE DRIVER LOCATION
+// =========================
+const updateLocation = async (req, res) => {
+  try {
+    const { latitude, longitude } = req.body;
+
+    const booking = await Booking.findByIdAndUpdate(
+      req.params.id,
+      {
+        currentLatitude: latitude,
+        currentLongitude: longitude,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.json({
+      success: true,
+      booking,
+    });
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+// =========================
+// GET LIVE LOCATION
+// =========================
+const getLiveLocation = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+
+    res.json({
+      success: true,
+      latitude: booking.currentLatitude,
+      longitude: booking.currentLongitude,
+      status: booking.status,
+      tripStarted: booking.tripStarted,
+      tripCompleted: booking.tripCompleted,
+    });
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
 module.exports = {
   createBooking,
   getBookings,
   getPendingBookings,
   getCustomerBookings,
   updateBookingStatus,
+  startTrip,
+  updateLocation,
+  getLiveLocation,
 };

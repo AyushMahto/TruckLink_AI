@@ -14,7 +14,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # Networking
-  http: ^1.5.0
+  http: ^1.6.0
   dio: ^5.9.0
 
   # Routing
@@ -24,8 +24,8 @@ dependencies:
   flutter_riverpod: ^2.6.1
 
   # Maps & Location
-  google_maps_flutter: ^2.13.1
-  geolocator: ^14.0.2
+  google_maps_flutter: ^2.18.0
+  geolocator: ^14.0.3
   flutter_polyline_points: ^2.1.0
 
   # Local Storage

@@ -39,6 +39,7 @@ const bookingSchema = new mongoose.Schema(
       enum: [
         "Pending",
         "Accepted",
+        "Rejected",
         "Picked",
         "In Transit",
         "Delivered",
@@ -50,6 +51,30 @@ const bookingSchema = new mongoose.Schema(
     totalPrice: {
       type: Number,
       required: true,
+    },
+
+    // =========================
+    // Live Tracking
+    // =========================
+
+    currentLatitude: {
+      type: Number,
+      default: 18.5204, // Pune
+    },
+
+    currentLongitude: {
+      type: Number,
+      default: 73.8567, // Pune
+    },
+
+    tripStarted: {
+      type: Boolean,
+      default: false,
+    },
+
+    tripCompleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {

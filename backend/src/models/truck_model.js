@@ -37,6 +37,16 @@ const truckSchema = new mongoose.Schema(
       required: true,
     },
 
+    latitude: {
+      type: Number,
+      default: 0,
+    },
+
+    longitude: {
+      type: Number,
+      default: 0,
+    },
+
     available: {
       type: Boolean,
       default: true,

@@ -44,7 +44,80 @@ const addTruck = async (req, res) => {
   }
 };
 
+// =============================
+// Update Truck Location
+// =============================
+const updateTruckLocation = async (req, res) => {
+  try {
+    const { truckId } = req.params;
+    const { latitude, longitude } = req.body;
+
+    const truck = await Truck.findByIdAndUpdate(
+      truckId,
+      {
+        latitude,
+        longitude,
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!truck) {
+      return res.status(404).json({
+        success: false,
+        message: "Truck not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      truck,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+// =============================
+// Get Truck Location
+// =============================
+const getTruckLocation = async (req, res) => {
+  try {
+    const { truckId } = req.params;
+
+    const truck = await Truck.findById(truckId);
+
+    if (!truck) {
+      return res.status(404).json({
+        success: false,
+        message: "Truck not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      latitude: truck.latitude,
+      longitude: truck.longitude,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
 module.exports = {
   getAvailableTrucks,
   addTruck,
+  updateTruckLocation,
+  getTruckLocation,
 };

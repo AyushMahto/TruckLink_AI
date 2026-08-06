@@ -5,23 +5,49 @@ const {
   createBooking,
   getBookings,
   getPendingBookings,
-  updateBookingStatus,
   getCustomerBookings,
+  updateBookingStatus,
+  startTrip,
+  updateLocation,
+  getLiveLocation,
 } = require("../controllers/booking_controller");
 
+// =========================
 // Create Booking
+// =========================
 router.post("/", createBooking);
 
-// All Bookings
+// =========================
+// Get All Bookings
+// =========================
 router.get("/", getBookings);
 
-// Pending Bookings
+// =========================
+// Get Pending Bookings
+// =========================
 router.get("/pending", getPendingBookings);
 
-// Customer Bookings
+// =========================
+// Get Customer Bookings
+// =========================
 router.get("/customer/:customerId", getCustomerBookings);
 
+// =========================
 // Update Booking Status
+// =========================
 router.put("/:id", updateBookingStatus);
+
+// =========================
+// Live Tracking Routes
+// =========================
+
+// Driver starts trip
+router.put("/start/:id", startTrip);
+
+// Driver updates location
+router.put("/location/:id", updateLocation);
+
+// Customer gets live location
+router.get("/location/:id", getLiveLocation);
 
 module.exports = router;
