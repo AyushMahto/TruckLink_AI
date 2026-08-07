@@ -32,13 +32,39 @@ class BookingService {
       }),
     );
 
+    if (response.statusCode != 201) {
+      throw Exception("Failed to create booking");
+    }
+
     return jsonDecode(response.body);
+  }
+
+  // =========================
+  // Get Customer Bookings
+  // =========================
+  Future<List<dynamic>> getCustomerBookings(String customerId) async {
+    final response = await http.get(
+      Uri.parse(
+        "${ApiService.baseUrl}/bookings/customer/$customerId",
+      ),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Failed to load customer bookings");
+    }
+
+    final data = jsonDecode(response.body);
+
+    return data["bookings"] ?? [];
   }
 
   // =========================
   // Get Pending Bookings
   // =========================
-  Future<List> getPendingBookings() async {
+  Future<List<dynamic>> getPendingBookings() async {
     final response = await http.get(
       Uri.parse("${ApiService.baseUrl}/bookings/pending"),
       headers: {
@@ -46,23 +72,14 @@ class BookingService {
       },
     );
 
+    if (response.statusCode != 200) {
+      throw Exception("Failed to load pending bookings");
+    }
+
     final data = jsonDecode(response.body);
 
-    return data["bookings"];
+    return data["bookings"] ?? [];
   }
-  // =========================
-// Customer Bookings
-// =========================
-
-Future<List> getCustomerBookings(String customerId) async {
-  final response = await http.get(
-    Uri.parse("${ApiService.baseUrl}/bookings/customer/$customerId"),
-  );
-
-  final data = jsonDecode(response.body);
-
-  return data["bookings"];
-}
 
   // =========================
   // Update Booking Status
@@ -72,7 +89,9 @@ Future<List> getCustomerBookings(String customerId) async {
     String status,
   ) async {
     final response = await http.put(
-      Uri.parse("${ApiService.baseUrl}/bookings/$bookingId"),
+      Uri.parse(
+        "${ApiService.baseUrl}/bookings/$bookingId",
+      ),
       headers: {
         "Content-Type": "application/json",
       },

@@ -121,10 +121,15 @@ class AppRouter {
 
       // Live Tracking
       GoRoute(
-        path: '/tracking',
-        builder: (context, state) => const TrackingScreen(),
-      ),
+  path: '/tracking',
+  builder: (context, state) {
+    final booking = state.extra as Map<String, dynamic>;
 
+    return TrackingScreen(
+      booking: booking,
+    );
+  },
+),
       // Customer Dashboard
       GoRoute(
         path: '/customer-dashboard',
