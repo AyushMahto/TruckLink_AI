@@ -5,7 +5,7 @@ import 'api_service.dart';
 
 class BookingService {
   // =========================
-  // Create Booking
+  // CREATE BOOKING
   // =========================
   Future<Map<String, dynamic>> createBooking({
     required String customerId,
@@ -33,16 +33,20 @@ class BookingService {
     );
 
     if (response.statusCode != 201) {
-      throw Exception("Failed to create booking");
+      throw Exception(
+        "Failed to create booking: ${response.body}",
+      );
     }
 
     return jsonDecode(response.body);
   }
 
   // =========================
-  // Get Customer Bookings
+  // GET CUSTOMER BOOKINGS
   // =========================
-  Future<List<dynamic>> getCustomerBookings(String customerId) async {
+  Future<List<dynamic>> getCustomerBookings(
+    String customerId,
+  ) async {
     final response = await http.get(
       Uri.parse(
         "${ApiService.baseUrl}/bookings/customer/$customerId",
@@ -53,7 +57,9 @@ class BookingService {
     );
 
     if (response.statusCode != 200) {
-      throw Exception("Failed to load customer bookings");
+      throw Exception(
+        "Failed to load customer bookings: ${response.body}",
+      );
     }
 
     final data = jsonDecode(response.body);
@@ -62,18 +68,22 @@ class BookingService {
   }
 
   // =========================
-  // Get Pending Bookings
+  // GET PENDING BOOKINGS
   // =========================
   Future<List<dynamic>> getPendingBookings() async {
     final response = await http.get(
-      Uri.parse("${ApiService.baseUrl}/bookings/pending"),
+      Uri.parse(
+        "${ApiService.baseUrl}/bookings/pending",
+      ),
       headers: {
         "Content-Type": "application/json",
       },
     );
 
     if (response.statusCode != 200) {
-      throw Exception("Failed to load pending bookings");
+      throw Exception(
+        "Failed to load pending bookings: ${response.body}",
+      );
     }
 
     final data = jsonDecode(response.body);
@@ -82,7 +92,7 @@ class BookingService {
   }
 
   // =========================
-  // Update Booking Status
+  // UPDATE BOOKING STATUS
   // =========================
   Future<bool> updateBookingStatus(
     String bookingId,
@@ -101,5 +111,91 @@ class BookingService {
     );
 
     return response.statusCode == 200;
+  }
+
+  // =========================
+  // START TRIP
+  // =========================
+  Future<Map<String, dynamic>> startTrip(
+    String bookingId,
+  ) async {
+    final response = await http.put(
+      Uri.parse(
+        "${ApiService.baseUrl}/bookings/start/$bookingId",
+      ),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(
+        "Failed to start trip: ${response.body}",
+      );
+    }
+
+    return jsonDecode(response.body);
+  }
+
+  // =========================
+  // UPDATE DRIVER LOCATION
+  // =========================
+  Future<Map<String, dynamic>> updateLocation({
+    required String bookingId,
+    required double latitude,
+    required double longitude,
+  }) async {
+    final response = await http.put(
+      Uri.parse(
+        "${ApiService.baseUrl}/bookings/location/$bookingId",
+      ),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        "latitude": latitude,
+        "longitude": longitude,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(
+        "Failed to update location: ${response.body}",
+      );
+    }
+
+    return jsonDecode(response.body);
+  }
+
+  // =========================
+  // GET LIVE LOCATION
+  // =========================
+  Future<Map<String, dynamic>> getLiveLocation(
+    String bookingId,
+  ) async {
+    final response = await http.get(
+      Uri.parse(
+        "${ApiService.baseUrl}/bookings/location/$bookingId",
+      ),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(
+        "Failed to get live location: ${response.body}",
+      );
+    }
+
+    final data = jsonDecode(response.body);
+
+    return {
+      "latitude": data["latitude"],
+      "longitude": data["longitude"],
+      "status": data["status"],
+      "tripStarted": data["tripStarted"],
+      "tripCompleted": data["tripCompleted"],
+    };
   }
 }
